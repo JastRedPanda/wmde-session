@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
@@ -23,8 +23,8 @@ fi
 if [ -n "${SHELL}" ]; then
     # --in-login-shell: our flag to indicate that we don't need to recurse any further
     if [ "${1}" != "--in-login-shell" ]; then
-        # `exec -l`: like `login`, prefixes $SHELL with a hyphen to start a login shell
-        exec bash -c "exec -l '${SHELL}' -c '${0} --in-login-shell'"
+        # `-l`: start $SHELL as a login shell so it sources the user's profile.
+        exec "${SHELL}" -l -c "'${0}' --in-login-shell"
     fi
 fi
 
@@ -50,8 +50,8 @@ if [ -z "$QT_QPA_PLATFORMTHEME" ]; then
 fi
 
 # Start gnome keyring components if the daemon is active
-# -> check if /run/user/$UID/keyring exists
-if [ -d "/run/user/$(id -u)/keyring" ]; then
+# -> check if $XDG_RUNTIME_DIR/keyring exists
+if [ -d "$XDG_RUNTIME_DIR/keyring" ]; then
 
     # Use PATH lookup instead of hardcoding /usr/bin
     if command -v gnome-keyring-daemon >/dev/null 2>&1; then
@@ -63,10 +63,10 @@ if [ -d "/run/user/$(id -u)/keyring" ]; then
     # Only set SSH_AUTH_SOCK if the socket actually exists. Either
     # set the correct one, or don't set one at all. Don't set the
     # wrong value.
-    if [ -S "/run/user/$(id -u)/gcr/ssh" ]; then
-        export SSH_AUTH_SOCK="/run/user/$(id -u)/gcr/ssh"
-    elif [ -S "/run/user/$(id -u)/keyring/ssh" ]; then
-        export SSH_AUTH_SOCK="/run/user/$(id -u)/keyring/ssh"
+    if [ -S "$XDG_RUNTIME_DIR/gcr/ssh" ]; then
+        export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+    elif [ -S "$XDG_RUNTIME_DIR/keyring/ssh" ]; then
+        export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
     fi
 fi
 
@@ -78,30 +78,26 @@ if command -v systemctl >/dev/null; then
     # For environment variables already imported into the user's
     # session, if the value imported differs from the value in this
     # environment, update it.
-    mapfile -t existing_env_vars < <(systemctl --user show-environment)
-    for env_var in "${existing_env_vars[@]}"; do
+    systemctl --user show-environment | while IFS= read -r env_var; do
         env_var_name="${env_var%%=*}"
-        env_var_value=${!env_var_name:-}
+        env_var_value="$(printenv "${env_var_name}" || true)"
 
         # Skip current iteration if the environment variable's value
         # in the current envionment is unset.
-        if [[ -z "${env_var_value}" ]]; then
+        if [ -z "${env_var_value}" ]; then
             continue
         fi
 
-        env_var_val_str_to_compare="${env_var_name}=${env_var_value}"
-        env_var_val_str_to_compare_ansi_c_quoted="${env_var_name}=\$'$(printf '%q' "${env_var_value}")'"
-        if [[ "${env_var}" == "${env_var_val_str_to_compare}" ]]; then
-            continue
-        elif [[ "${env_var}" == "${env_var_val_str_to_compare_ansi_c_quoted}" ]]; then
+        # Skip updating variables where systemd already holds this exact value.
+        if [ "${env_var}" = "${env_var_name}=${env_var_value}" ]; then
             continue
         fi
-        systemctl --user import-environment "${env_var_name}" ||:
+        systemctl --user import-environment "${env_var_name}" || true
     done
 fi
 
 # Run wmde-session
-if [[ -z "${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+if [ -z "${DBUS_SESSION_BUS_ADDRESS}" ]; then
     exec /usr/bin/dbus-run-session -- /usr/bin/wmde-session
 else
     exec /usr/bin/wmde-session
