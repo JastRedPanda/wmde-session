@@ -24,8 +24,9 @@ use std::path::PathBuf;
 #[cfg(feature = "autostart")]
 use std::process::{Command, Stdio};
 use std::sync::Arc;
+use systemd::is_systemd_used;
 #[cfg(feature = "systemd")]
-use systemd::{get_systemd_env, is_systemd_used, spawn_scope};
+use systemd::{get_systemd_env, spawn_scope};
 use tokio::signal::unix::{SignalKind, signal};
 use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::sync::{Mutex, oneshot};
@@ -46,6 +47,13 @@ const ENVIRONMENT_NAME: &'static str = "WMDE";
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
+	if let Some(arg) = env::args().nth(1)
+		&& (arg == "--version" || arg == "-V")
+	{
+		println!("cosmic-session {}", env!("CARGO_PKG_VERSION"));
+		return Ok(());
+	}
+
 	color_eyre::install().wrap_err("failed to install color_eyre error handler")?;
 
 	let trace = tracing_subscriber::registry();
@@ -158,6 +166,13 @@ async fn start(
 	// now that wmde-comp is ready, set XDG_SESSION_TYPE=wayland for new processes
 	env_vars.push(("XDG_SESSION_TYPE".to_string(), "wayland".to_string()));
 	systemd::set_systemd_environment("XDG_SESSION_TYPE", "wayland").await;
+
+	// expose the session version
+	env_vars.push((
+		"COSMIC_VERSION".to_string(),
+		env!("CARGO_PKG_VERSION").to_string(),
+	));
+	systemd::set_systemd_environment("COSMIC_VERSION", env!("CARGO_PKG_VERSION")).await;
 
 	#[cfg(feature = "systemd")]
 	let _inhibit_fd = if *is_systemd_used() {
