@@ -50,7 +50,7 @@ async fn main() -> Result<()> {
 	if let Some(arg) = env::args().nth(1)
 		&& (arg == "--version" || arg == "-V")
 	{
-		println!("cosmic-session {}", env!("CARGO_PKG_VERSION"));
+		println!("wmde-session {}", env!("CARGO_PKG_VERSION"));
 		return Ok(());
 	}
 
