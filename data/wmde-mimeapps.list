@@ -1,19 +1,29 @@
 [Default Applications]
 inode/directory=fun.wmde.files.desktop
 inode/mount-point=fun.wmde.files.desktop
-# Pictures. The list is src/formats.rs in wmde-photos, read as media types: the same
-# set stands in MimeType= of fun.wmde.photos.desktop, word for word. Claiming a type
-# the viewer cannot decode replaces the ordinary "open with" dialog with an error.
-image/jpeg=fun.wmde.photos.desktop
-image/png=fun.wmde.photos.desktop
-image/webp=fun.wmde.photos.desktop
-image/gif=fun.wmde.photos.desktop
-image/bmp=fun.wmde.photos.desktop
-image/tiff=fun.wmde.photos.desktop
-image/vnd.microsoft.icon=fun.wmde.photos.desktop
-image/avif=fun.wmde.photos.desktop
-image/jxl=fun.wmde.photos.desktop
-image/svg+xml=fun.wmde.photos.desktop
+# Pictures have two handlers, and each is assigned only the types that MimeType= of its
+# own desktop entry declares: claiming a type the application cannot decode replaces the
+# ordinary "open with" dialog with an error. wmde-viewer takes every type it declares,
+# aliases written in their canonical shared-mime-info form (image/x-icon is
+# vnd.microsoft.icon, image/heic is heif; image/x-qoi is no registered type and gets no
+# key). wmde-photos keeps only what the viewer does not declare: compressed SVG and the
+# thirteen camera RAW types.
+image/jpeg=fun.wmde.Viewer.desktop
+image/png=fun.wmde.Viewer.desktop
+image/webp=fun.wmde.Viewer.desktop
+image/gif=fun.wmde.Viewer.desktop
+image/bmp=fun.wmde.Viewer.desktop
+image/tiff=fun.wmde.Viewer.desktop
+image/vnd.microsoft.icon=fun.wmde.Viewer.desktop
+image/avif=fun.wmde.Viewer.desktop
+image/jxl=fun.wmde.Viewer.desktop
+image/heif=fun.wmde.Viewer.desktop
+image/svg+xml=fun.wmde.Viewer.desktop
+image/vnd.radiance=fun.wmde.Viewer.desktop
+image/x-portable-anymap=fun.wmde.Viewer.desktop
+image/x-portable-bitmap=fun.wmde.Viewer.desktop
+image/x-portable-graymap=fun.wmde.Viewer.desktop
+image/x-portable-pixmap=fun.wmde.Viewer.desktop
 image/svg+xml-compressed=fun.wmde.photos.desktop
 image/x-adobe-dng=fun.wmde.photos.desktop
 image/x-canon-cr2=fun.wmde.photos.desktop
@@ -31,10 +41,6 @@ image/x-sigma-x3f=fun.wmde.photos.desktop
 image/x-gray=org.gnome.eog.desktop
 image/x-icb=org.gnome.eog.desktop
 image/x-pcx=org.gnome.eog.desktop
-image/x-portable-anymap=org.gnome.eog.desktop
-image/x-portable-bitmap=org.gnome.eog.desktop
-image/x-portable-graymap=org.gnome.eog.desktop
-image/x-portable-pixmap=org.gnome.eog.desktop
 image/x-xbitmap=org.gnome.eog.desktop
 image/x-xpixmap=org.gnome.eog.desktop
 image/vnd.wap.wbmp=org.gnome.eog.desktop

@@ -27,15 +27,17 @@ license=('GPL-3.0-only')
 # wmde-screenshot is here for the same reason as wmde-greeter: the compositor binds Print
 # to it and wmde-portal forwards every screenshot request from other applications to it,
 # so both are dead without the package installed.
-# wmde-photos for the third time over: this package is the one that ships
-# wmde-mimeapps.list, so it is this package that names fun.wmde.photos.desktop as the
-# handler for every picture. An association pointing at a desktop entry no installed
-# package provides is dead - a double click on a photograph falls through to whatever
-# else is around, or to nothing at all.
+# wmde-viewer and wmde-photos for the third time over: this package is the one that ships
+# wmde-mimeapps.list, so it is this package that names fun.wmde.Viewer.desktop and
+# fun.wmde.photos.desktop as the handlers for pictures. An association pointing at a
+# desktop entry no installed package provides is dead - a double click on a photograph
+# falls through to whatever else is around, or to nothing at all. The viewer holds every
+# type it declares; photos stays only for what the viewer does not declare (camera RAW
+# and compressed SVG).
 depends=('bash' 'wmde-comp' 'wmde-settings-daemon' 'wmde-notifications' 'wmde-panel'
          'wmde-bg' 'wmde-applets' 'wmde-files' 'wmde-osd' 'wmde-start-menu' 'wmde-icons-base'
-         'wmde-portal' 'wmde-screenshot' 'wmde-photos' 'wmde-greeter' 'libgcc' 'glibc'
-         'xorg-xwayland' 'xdg-user-dirs' 'avahi')
+         'wmde-portal' 'wmde-screenshot' 'wmde-viewer' 'wmde-photos' 'wmde-greeter' 'libgcc'
+         'glibc' 'xorg-xwayland' 'xdg-user-dirs' 'avahi')
 # start-wmde exports QT_QPA_PLATFORMTHEME=qt5ct, a plugin key served by qt5ct (Qt5) and by
 # qt6ct (Qt6). wmde-settings-daemon writes the WMDE palette into ~/.config/qt{5,6}ct; without
 # one of these plugins installed nothing reads it. qt6ct is a hard dep of the wmde-desktop
