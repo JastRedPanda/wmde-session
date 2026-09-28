@@ -1,13 +1,13 @@
 [Default Applications]
 inode/directory=fun.wmde.files.desktop
 inode/mount-point=fun.wmde.files.desktop
-# Pictures have two handlers, and each is assigned only the types that MimeType= of its
-# own desktop entry declares: claiming a type the application cannot decode replaces the
-# ordinary "open with" dialog with an error. wmde-viewer takes every type it declares,
-# aliases written in their canonical shared-mime-info form (image/x-icon is
-# vnd.microsoft.icon, image/heic is heif; image/x-qoi is no registered type and gets no
-# key). wmde-photos keeps only what the viewer does not declare: compressed SVG and the
-# thirteen camera RAW types.
+# Pictures go to wmde-viewer, assigned only the types that MimeType= of its own desktop
+# entry declares: claiming a type the application cannot decode replaces the ordinary
+# "open with" dialog with an error. It takes every type it declares, aliases written in
+# their canonical shared-mime-info form (image/x-icon is vnd.microsoft.icon, image/heic is
+# heif; image/x-qoi is no registered type and gets no key), compressed SVG and the thirteen
+# camera RAW types among them. wmde-photos, which opened those two before, is assigned
+# nothing.
 image/jpeg=fun.wmde.Viewer.desktop
 image/png=fun.wmde.Viewer.desktop
 image/webp=fun.wmde.Viewer.desktop
@@ -24,20 +24,20 @@ image/x-portable-anymap=fun.wmde.Viewer.desktop
 image/x-portable-bitmap=fun.wmde.Viewer.desktop
 image/x-portable-graymap=fun.wmde.Viewer.desktop
 image/x-portable-pixmap=fun.wmde.Viewer.desktop
-image/svg+xml-compressed=fun.wmde.photos.desktop
-image/x-adobe-dng=fun.wmde.photos.desktop
-image/x-canon-cr2=fun.wmde.photos.desktop
-image/x-canon-crw=fun.wmde.photos.desktop
-image/x-nikon-nef=fun.wmde.photos.desktop
-image/x-nikon-nrw=fun.wmde.photos.desktop
-image/x-sony-arw=fun.wmde.photos.desktop
-image/x-olympus-orf=fun.wmde.photos.desktop
-image/x-panasonic-rw2=fun.wmde.photos.desktop
-image/x-pentax-pef=fun.wmde.photos.desktop
-image/x-samsung-srw=fun.wmde.photos.desktop
-image/x-fuji-raf=fun.wmde.photos.desktop
-image/x-minolta-mrw=fun.wmde.photos.desktop
-image/x-sigma-x3f=fun.wmde.photos.desktop
+image/svg+xml-compressed=fun.wmde.Viewer.desktop
+image/x-adobe-dng=fun.wmde.Viewer.desktop
+image/x-canon-cr2=fun.wmde.Viewer.desktop
+image/x-canon-crw=fun.wmde.Viewer.desktop
+image/x-nikon-nef=fun.wmde.Viewer.desktop
+image/x-nikon-nrw=fun.wmde.Viewer.desktop
+image/x-sony-arw=fun.wmde.Viewer.desktop
+image/x-olympus-orf=fun.wmde.Viewer.desktop
+image/x-panasonic-rw2=fun.wmde.Viewer.desktop
+image/x-pentax-pef=fun.wmde.Viewer.desktop
+image/x-samsung-srw=fun.wmde.Viewer.desktop
+image/x-fuji-raf=fun.wmde.Viewer.desktop
+image/x-minolta-mrw=fun.wmde.Viewer.desktop
+image/x-sigma-x3f=fun.wmde.Viewer.desktop
 image/x-gray=org.gnome.eog.desktop
 image/x-icb=org.gnome.eog.desktop
 image/x-pcx=org.gnome.eog.desktop

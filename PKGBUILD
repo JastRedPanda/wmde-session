@@ -27,13 +27,13 @@ license=('GPL-3.0-only')
 # wmde-screenshot is here for the same reason as wmde-greeter: the compositor binds Print
 # to it and wmde-portal forwards every screenshot request from other applications to it,
 # so both are dead without the package installed.
-# wmde-viewer and wmde-photos for the third time over: this package is the one that ships
-# wmde-mimeapps.list, so it is this package that names fun.wmde.Viewer.desktop and
-# fun.wmde.photos.desktop as the handlers for pictures. An association pointing at a
-# desktop entry no installed package provides is dead - a double click on a photograph
-# falls through to whatever else is around, or to nothing at all. The viewer holds every
-# type it declares; photos stays only for what the viewer does not declare (camera RAW
-# and compressed SVG).
+# wmde-viewer for the third time over: this package is the one that ships
+# wmde-mimeapps.list, so it is this package that names fun.wmde.Viewer.desktop as the
+# handler for pictures. An association pointing at a desktop entry no installed package
+# provides is dead - a double click on a photograph falls through to whatever else is
+# around, or to nothing at all. The viewer holds every type it declares, camera RAW and
+# compressed SVG included; wmde-photos is assigned nothing and stays here until it is
+# retired.
 depends=('bash' 'wmde-comp' 'wmde-settings-daemon' 'wmde-notifications' 'wmde-panel'
          'wmde-bg' 'wmde-applets' 'wmde-files' 'wmde-osd' 'wmde-start-menu' 'wmde-icons-base'
          'wmde-portal' 'wmde-screenshot' 'wmde-viewer' 'wmde-photos' 'wmde-greeter' 'libgcc'
