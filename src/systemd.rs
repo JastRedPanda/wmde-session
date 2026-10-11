@@ -1,28 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-use std::path::Path;
 use std::process::{Command, Stdio};
-use std::sync::OnceLock;
 
 use zbus::Connection;
 use zbus::zvariant::{Array, OwnedValue};
-
-#[derive(Debug)]
-pub struct EnvVar {
-	pub key: String,
-	pub value: String,
-}
-
-impl From<(&str, &str)> for EnvVar {
-	fn from(val: (&str, &str)) -> Self {
-		EnvVar {
-			key: val.0.to_owned(),
-			value: val.1.to_owned(),
-		}
-	}
-}
-
-#[cfg(feature = "systemd")]
 use zbus_systemd::systemd1::ManagerProxy as SystemdManagerProxy;
 
 pub async fn set_systemd_environment(key: &str, value: &str) {
@@ -46,29 +27,44 @@ pub fn stop_systemd_target() {
 	)
 }
 
-/// Determine if systemd is used as the init system. This should work on all
-/// linux distributions.
-pub fn is_systemd_used() -> &'static bool {
-	static IS_SYSTEMD_USED: OnceLock<bool> = OnceLock::new();
-	IS_SYSTEMD_USED.get_or_init(|| Path::new("/run/systemd/system").exists())
-}
-
-#[cfg(feature = "systemd")]
-pub async fn get_systemd_env() -> Result<Vec<EnvVar>, zbus::Error> {
+async fn load_systemd_env() -> zbus::Result<Vec<String>> {
 	let connection = Connection::session().await?;
 	let systemd_manager = SystemdManagerProxy::new(&connection).await?;
-	let systemd_env = systemd_manager.environment().await?;
-
-	let mut out: Vec<EnvVar> = Vec::new();
-	for i in systemd_env {
-		if let Some(b) = i.split_once("=") {
-			out.push(b.into());
-		}
-	}
-	Ok(out)
+	systemd_manager.environment().await
 }
 
-#[cfg(feature = "systemd")]
+/// Get the systemd user manager environment variables.
+pub async fn get_systemd_env() -> Vec<(String, String)> {
+	match load_systemd_env().await {
+		Ok(env) => {
+			env.iter()
+				// split into key value pairs
+				.filter_map(|var| var.split_once("="))
+				.filter(|&(key, _value)| {
+					// Only update the envvar if unset
+					std::env::var_os(key).is_none()
+                              // Blocklist of envvars that we shouldn't touch (taken from KDE)
+                              && (!key.starts_with("XDG_")
+                                      || key == "XDG_DATA_DIRS"
+                                      || key == "XDG_CONFIG_DIRS")
+                              && key != "DISPLAY"
+                              && key != "XAUTHORITY"
+                              && key != "WAYLAND_DISPLAY"
+                              && key != "WAYLAND_SOCKET"
+                              && key != "_"
+                              && key != "SHELL"
+                              && key != "SHLVL"
+				})
+				.map(|(key, value)| (key.to_owned(), value.to_owned()))
+				.collect()
+		}
+		Err(err) => {
+			warn!("Failed to sync systemd environment {}.", err);
+			Vec::new()
+		}
+	}
+}
+
 /// Spawn a systemd scope unit with the given name and PIDs.
 pub async fn spawn_scope(mut command: String, pids: Vec<u32>) -> Result<(), zbus::Error> {
 	let connection = Connection::session().await?;

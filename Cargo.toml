@@ -1,7 +1,7 @@
 [package]
 name = "wmde-session"
 description = "The session manager for the WMDE desktop environment"
-version = "1.9.0"
+version = "1.10.0"
 license = "GPL-3.0-only"
 edition = "2024"
 rust-version = "1.93"
@@ -46,8 +46,8 @@ logind-zbus = { version = "5.3.2", optional = true }
 
 [features]
 systemd = ["dep:zbus_systemd", "dep:tracing-journald"]
-logind = ["systemd", "logind-zbus"]
-default = ["logind"]
+logind = ["dep:logind-zbus"]
+default = ["logind", "systemd"]
 autostart = ["dep:shell-words", "dep:dirs", "dep:freedesktop-desktop-entry"]
 
 # WMDE: redirect standard D-Bus binding crates to the local wmde-dbus-settings-bindings
