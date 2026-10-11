@@ -6,8 +6,7 @@ inode/mount-point=fun.wmde.files.desktop
 # "open with" dialog with an error. It takes every type it declares, aliases written in
 # their canonical shared-mime-info form (image/x-icon is vnd.microsoft.icon, image/heic is
 # heif; image/x-qoi is no registered type and gets no key), compressed SVG and the thirteen
-# camera RAW types among them. wmde-photos, which opened those two before, is assigned
-# nothing.
+# camera RAW types among them. wmde-photos, which opened those two before, is retired.
 image/jpeg=fun.wmde.Viewer.desktop
 image/png=fun.wmde.Viewer.desktop
 image/webp=fun.wmde.Viewer.desktop

@@ -32,11 +32,11 @@ license=('GPL-3.0-only')
 # handler for pictures. An association pointing at a desktop entry no installed package
 # provides is dead - a double click on a photograph falls through to whatever else is
 # around, or to nothing at all. The viewer holds every type it declares, camera RAW and
-# compressed SVG included; wmde-photos is assigned nothing and stays here until it is
-# retired.
+# compressed SVG included. wmde-photos, the former picture viewer, is retired: the viewer
+# replaces it.
 depends=('bash' 'wmde-comp' 'wmde-settings-daemon' 'wmde-notifications' 'wmde-panel'
          'wmde-bg' 'wmde-applets' 'wmde-files' 'wmde-osd' 'wmde-start-menu' 'wmde-icons-base'
-         'wmde-portal' 'wmde-screenshot' 'wmde-viewer' 'wmde-photos' 'wmde-greeter' 'libgcc'
+         'wmde-portal' 'wmde-screenshot' 'wmde-viewer' 'wmde-greeter' 'libgcc'
          'glibc' 'xorg-xwayland' 'xdg-user-dirs' 'avahi')
 # start-wmde exports QT_QPA_PLATFORMTHEME=qt5ct, a plugin key served by qt5ct (Qt5) and by
 # qt6ct (Qt6). wmde-settings-daemon writes the WMDE palette into ~/.config/qt{5,6}ct; without
