@@ -44,6 +44,7 @@ jobs:
           git clone --depth 1 -b wmde https://github.com/Lin-WMDE/wmde-dbus-settings-bindings.git wmde-dbus-settings-bindings
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           path: wmde-session
       - name: Build deps
         run: |
@@ -78,6 +79,7 @@ jobs:
           git clone --depth 1 -b wmde https://github.com/Lin-WMDE/wmde-dbus-settings-bindings.git wmde-dbus-settings-bindings
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           path: wmde-session
       - name: Build deps
         run: |
